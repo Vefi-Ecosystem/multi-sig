@@ -128,12 +128,16 @@ contract MultiSig is AccessControl, Ownable, IMultiSig {
     require(hasRole(soleOwnerRole, _msgSender()), "only_sole_owner");
     require(!hasRole(ownerRole, account), "already_a_signatory");
     _grantRole(ownerRole, account);
+    requiredConfirmations = requiredConfirmations + 1;
+    emit SignatoryAdded(account);
   }
 
   function removeSignatory(address account) external {
     require(hasRole(soleOwnerRole, _msgSender()), "only_sole_owner");
     require(hasRole(ownerRole, account), "not_a_signatory");
     _revokeRole(ownerRole, account);
+    requiredConfirmations = requiredConfirmations - 1;
+    emit SignatoryRemoved(account);
   }
 
   receive() external payable {}
