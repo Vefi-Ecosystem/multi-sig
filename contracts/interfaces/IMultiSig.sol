@@ -37,4 +37,5 @@ interface IMultiSig {
   );
   event TransactionConfirmed(uint256 transactionIndex, uint256 confirmations);
   event TransactionExecuted(uint256 transactionIndex);
+  event ConfirmationRevoked(uint256 transactionIndex, uint256 confirmations);
 }

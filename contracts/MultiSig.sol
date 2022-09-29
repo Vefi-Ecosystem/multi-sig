@@ -9,6 +9,8 @@ contract MultiSig is AccessControl, Ownable, IMultiSig {
   bytes32 public ownerRole = keccak256(abi.encodePacked("OWNER_ROLE"));
   uint256 public requiredConfirmations;
 
+  mapping(address => mapping(uint256 => bool)) public confirmations;
+
   Transaction[] public transactions;
 
   uint256 private currentIndex;
@@ -87,9 +89,20 @@ contract MultiSig is AccessControl, Ownable, IMultiSig {
 
   function confirmTransaction(uint256 txIndex) external txExists(txIndex) doesNotHaveRequiredConfirmations(txIndex) notExecuted(txIndex) {
     require(hasRole(ownerRole, _msgSender()) || hasRole(soleOwnerRole, _msgSender()), "only_signatory");
+    require(!confirmations[_msgSender()][txIndex], "you_have_already_confirmed_this_transaction");
     Transaction storage transaction = transactions[txIndex];
     transaction.confirmations = transaction.confirmations + 1;
+    confirmations[_msgSender()][txIndex] = true;
     emit TransactionConfirmed(txIndex, transaction.confirmations);
+  }
+
+  function revokeConfirmation(uint256 txIndex) external txExists(txIndex) notExecuted(txIndex) {
+    require(hasRole(ownerRole, _msgSender()) || hasRole(soleOwnerRole, _msgSender()), "only_signatory");
+    require(confirmations[_msgSender()][txIndex], "you_did_not_confirm_this_transaction");
+    Transaction storage transaction = transactions[txIndex];
+    transaction.confirmations = transaction.confirmations - 1;
+    confirmations[_msgSender()][txIndex] = false;
+    emit ConfirmationRevoked(txIndex, transaction.confirmations);
   }
 
   function executeTransaction(uint256 txIndex)
@@ -109,6 +122,18 @@ contract MultiSig is AccessControl, Ownable, IMultiSig {
 
   function transferEther(address to) external payable {
     initiateTransaction(to, "", msg.value);
+  }
+
+  function addSignatory(address account) external {
+    require(hasRole(soleOwnerRole, _msgSender()), "only_sole_owner");
+    require(!hasRole(ownerRole, account), "already_a_signatory");
+    _grantRole(ownerRole, account);
+  }
+
+  function removeSignatory(address account) external {
+    require(hasRole(soleOwnerRole, _msgSender()), "only_sole_owner");
+    require(hasRole(ownerRole, account), "not_a_signatory");
+    _revokeRole(ownerRole, account);
   }
 
   receive() external payable {}
