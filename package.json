@@ -1,6 +1,6 @@
 {
   "name": "vefi-multi-sig",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "format": "prettier --write **/**/*.{js,json,sol}",
     "clean": "rm -rf artifacts",
     "compile": "npx hardhat compile",
-    "precompile": "yarn clean"
+    "precompile": "yarn clean",
+    "deploy:bsc:testnet": "npx hardhat run scripts/deploy.js --network bsc_testnet"
   },
   "repository": {
     "type": "git",
@@ -27,10 +28,15 @@
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "@openzeppelin/contracts": "^4.7.3",
     "chai": "^4.3.6",
+    "dotenv": "^16.0.3",
     "ethereum-waffle": "^3.4.4",
     "ethers": "^5.7.1",
     "hardhat": "^2.11.2",
     "mocha": "^10.0.0",
     "prettier-plugin-solidity": "^1.0.0-beta.24"
-  }
+  },
+  "files": [
+    "contracts",
+    "artifacts"
+  ]
 }

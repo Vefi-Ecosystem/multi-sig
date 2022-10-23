@@ -9,6 +9,8 @@ contract MultiSigActions is Ownable {
 
   event MultiSigDeployed(address wallet, address[] signatories, uint256 requiredConfirmations);
 
+  mapping(address => address[]) public multisigs;
+
   constructor(uint256 _fee) {
     fee = _fee;
   }
@@ -23,6 +25,12 @@ contract MultiSigActions is Ownable {
       if iszero(extcodesize(multiSigWallet)) {
         revert(0, 0)
       }
+    }
+
+    for (uint256 i = 0; i < signatories.length; i++) {
+      address signatory = signatories[i];
+      address[] storage multisig = multisigs[signatory];
+      multisig.push(multiSigWallet);
     }
 
     emit MultiSigDeployed(multiSigWallet, signatories, requiredConfirmations);

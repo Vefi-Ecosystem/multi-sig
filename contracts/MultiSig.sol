@@ -120,8 +120,8 @@ contract MultiSig is AccessControl, Ownable, IMultiSig {
     emit TransactionExecuted(txIndex);
   }
 
-  function transferEther(address to) external payable {
-    initiateTransaction(to, "", msg.value);
+  function transferEther(address to, uint256 amount) external {
+    initiateTransaction(to, "", amount);
   }
 
   function addSignatory(address account) external {
