@@ -14,7 +14,8 @@
     "deploy:bsc:mainnet": "npx hardhat run scripts/deploy.js --network bsc_mainnet",
     "deploy:omax:mainnet": "npx hardhat run scripts/deploy.js --network omax_mainnet",
     "deploy:gatechain:mainnet": "npx hardhat run scripts/deploy.js --network gatechain_mainnet",
-    "deploy:wanchain:mainnet": "npx hardhat run scripts/deploy.js --network wanchain_mainnet"
+    "deploy:wanchain:mainnet": "npx hardhat run scripts/deploy.js --network wanchain_mainnet",
+    "deploy:okx:mainnet": "npx hardhat run scripts/deploy.js --network okx_mainnet"
   },
   "repository": {
     "type": "git",
